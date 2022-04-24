@@ -18,6 +18,7 @@ class EngageBayRestAPIHelper
     const ENGAGEBAY_ADD_TAGS_API_URL       = self::ENGAGEBAY_BASE_URL . '/subscribers/email/tags/add';
     const ENGAGEBAY_BULK_SYNC              = self::ENGAGEBAY_BASE_URL . '/magento/bulk-dump/%s';
     const ENGAGEBAY_STORE_ORDERS           = self::ENGAGEBAY_BASE_URL . '/magento/hook/ORDERS';
+    const ENGAGEBAY_DEALS_TRACKS           = self::ENGAGEBAY_BASE_URL . '/tracks';
 
     public const LOGIN_REQUEST_IDENTIFIER             = 'login';
     public const SEARCH_REQUEST_IDENTIFIER            = 'search';
@@ -27,6 +28,7 @@ class EngageBayRestAPIHelper
     public const ADD_TAGS_REQUEST_IDENTIFIER          = 'add_tags';
     public const BULK_SYNC_REQUEST_IDENTIFIER         = 'bulk_sync';
     public const STORE_ORDERS_HOOK_REQUEST_IDENTIFIER = 'store_orders_hook';
+    public const DEALS_TRACKS_REQUEST_IDENTIFIER      = 'get_tracks';
 
     /**
      * @var ZendClient
@@ -214,6 +216,13 @@ class EngageBayRestAPIHelper
         $response = $this->makeRequest(self::ENGAGEBAY_STORE_ORDERS, 'POST', json_encode($payload));
 
         return $this->decodeResponse($response, self::STORE_ORDERS_HOOK_REQUEST_IDENTIFIER);
+    }
+
+    public function getTracks()
+    {
+        $response = $this->makeRequest(self::ENGAGEBAY_DEALS_TRACKS, 'GET');
+
+        return $this->decodeResponse($response, self::DEALS_TRACKS_REQUEST_IDENTIFIER);
     }
 
     /**

@@ -17,10 +17,10 @@ use Zend_Http_Client_Exception;
 class SyncData
 {
     private EngageBayRestAPIHelper $_engageBayRestAPIHelper;
-    private Image        $_imageHelper;
-    private Data         $_helper;
-    private UrlInterface $_url;
-    private Currency     $_currency;
+    private Image                  $_imageHelper;
+    private Data                   $_helper;
+    private UrlInterface           $_url;
+    private Currency               $_currency;
 
     /**
      * SyncData constructor.
@@ -31,10 +31,11 @@ class SyncData
         Data $helper,
         UrlInterface $url,
         Currency $currency
-    ) {
+    )
+    {
         $this->_engageBayRestAPIHelper = $engageBayRestAPIHelper;
         $this->_imageHelper            = $imageHelper;
-        $this->_helper                  = $helper;
+        $this->_helper                 = $helper;
         $this->_url                    = $url;
         $this->_currency               = $currency;
     }
@@ -80,8 +81,8 @@ class SyncData
     {
         $products = [];
         /**
- * @var OrderItemInterface $item
-*/
+         * @var OrderItemInterface $item
+         */
         foreach ($items as $item) {
             $_product = $item->getProduct();
             array_push(
@@ -100,7 +101,7 @@ class SyncData
             'account_domain'                 => $this->_helper->getDomain(),
             'account_api_key'                => $this->_helper->getRestApiKey(),
             'checkout_url'                   => $this->_url->getUrl('checkout'),
-            'track_id'                       => null,
+            'track_id'                       => $this->_helper->getDealsTrackName(),
             'engagebay_sync_orders_as_deals' => true,
             'order_id'                       => $orderId,
             'subject'                        => $subject,
