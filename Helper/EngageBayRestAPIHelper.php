@@ -43,7 +43,7 @@ class EngageBayRestAPIHelper
     /**
      * @var array
      */
-    private array $headers;
+    public array $headers;
 
     /**
      * @var Data

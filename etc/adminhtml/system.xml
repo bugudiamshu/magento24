@@ -42,7 +42,6 @@
                 <field id="engagebay_sync_deals_track" translate="label comment" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Select the deals track</label>
                     <source_model>EngageBay\Marketing\Block\System\Config\SelectDeals</source_model>
-                    <comment>The tracks are available to select once you save the configuration</comment>
                 </field>
                 <field id="engagebay_webpopups" translate="label comment" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Allow Webpopups</label>

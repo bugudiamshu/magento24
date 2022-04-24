@@ -29,6 +29,21 @@ class Button extends ButtonField
     }
 
     /**
+     * Get Tracks
+     *
+     * @return string
+     */
+    public function getTracksURL(): string
+    {
+        return $this->getUrl(
+            'engagebay/login/tracks',
+            [
+                'form_key' => $this->getFormKey(),
+            ]
+        );
+    }
+
+    /**
      * Get EngageBay Login Button HTML
      *
      * @return string
