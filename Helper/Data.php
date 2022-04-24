@@ -23,6 +23,9 @@ class Data extends AbstractHelper
     const XML_PATH_SYNC_CONTACTS          = 'engagebay/settings/engagebay_sync_contacts';
     const XML_PATH_SYNC_ORDERS            = 'engagebay/settings/engagebay_sync_orders';
     const XML_PATH_SYNC_DEALS             = 'engagebay/settings/engagebay_sync_deals';
+    const XML_PATH_SYNC_DEALS_TRACK       = 'engagebay/settings/engagebay_sync_deals_track';
+
+    private WriterInterface $config;
 
     /**
      * Data constructor.
@@ -35,7 +38,8 @@ class Data extends AbstractHelper
         Context $context,
         ScopeConfigInterface $scopeConfig,
         WriterInterface $config
-    ) {
+    )
+    {
         $this->scopeConfig = $scopeConfig;
         $this->config      = $config;
         parent::__construct($context);
@@ -127,6 +131,21 @@ class Data extends AbstractHelper
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_ENGAGEBAY_DOMAIN,
+            $scope
+        );
+    }
+
+    /**
+     * Get Domain
+     *
+     * @param string $scope
+     *
+     * @return string
+     */
+    public function getDealsTrackName($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_SYNC_DEALS_TRACK,
             $scope
         );
     }
