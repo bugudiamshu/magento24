@@ -12,7 +12,7 @@ class Config extends Template
      *
      * @var Data
      */
-    protected $helper;
+    protected Data $helper;
 
     /**
      * Config constructor.
@@ -31,7 +31,7 @@ class Config extends Template
      *
      * @return string
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->helper->getUsername();
     }
@@ -41,7 +41,7 @@ class Config extends Template
      *
      * @return string
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->helper->getPassword();
     }
@@ -49,9 +49,9 @@ class Config extends Template
     /**
      * Get JS API Key
      *
-     * @return string
+     * @return string|null
      */
-    public function getJsApiKey()
+    public function getJsApiKey(): ?string
     {
         return $this->helper->getRestApiKey();
     }
@@ -61,7 +61,7 @@ class Config extends Template
      *
      * @return string
      */
-    public function getDomain()
+    public function getDomain(): string
     {
         return $this->helper->getDomain();
     }
@@ -71,7 +71,7 @@ class Config extends Template
      *
      * @return string
      */
-    public function isWebpopupsEnabled()
+    public function isWebpopupsEnabled(): string
     {
         return $this->helper->isWebpopupsEnabled();
     }

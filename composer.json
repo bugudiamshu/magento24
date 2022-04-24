@@ -2,7 +2,7 @@
     "name": "engagebay-crm/marketing",
     "description": "EngageBay Module for Magento2",
     "require": {
-      "php": "~5.5.0|~5.6.0|~7.0.0|~7.2|~7.3|~7.4|~8.1"
+      "php": ">=7.4"
     },
     "type": "magento2-module",
     "version": "1.1.0",

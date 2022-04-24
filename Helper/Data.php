@@ -12,19 +12,21 @@ class Data extends AbstractHelper
     /**
      * Config paths for using throughout the code
      */
+    public const XML_PATH_ENGAGEBAY_USERNAME = 'engagebay/auth/engagebay_username';
+    public const XML_PATH_ENGAGEBAY_PASSWORD = 'engagebay/auth/engagebay_password';
+    public const XML_PATH_ENGAGEBAY_REST_API_KEY = 'engagebay/auth/engagebay_rest_api_key';
+    public const XML_PATH_ENGAGEBAY_JS_API_KEY = 'engagebay/auth/engagebay_js_api_key';
+    public const XML_PATH_AUTH_STATUS = 'engagebay/auth/status';
+    public const XML_PATH_ENGAGEBAY_DOMAIN = 'engagebay/auth/domain';
+    public const XML_PATH_WEBPOPUPS = 'engagebay/settings/engagebay_webpopups';
+    public const XML_PATH_SYNC_CONTACTS = 'engagebay/settings/engagebay_sync_contacts';
+    public const XML_PATH_SYNC_ORDERS = 'engagebay/settings/engagebay_sync_orders';
+    public const XML_PATH_SYNC_DEALS = 'engagebay/settings/engagebay_sync_deals';
+    public const XML_PATH_SYNC_DEALS_TRACK = 'engagebay/settings/engagebay_sync_deals_track';
 
-    const XML_PATH_ENGAGEBAY_USERNAME     = 'engagebay/auth/engagebay_username';
-    const XML_PATH_ENGAGEBAY_PASSWORD     = 'engagebay/auth/engagebay_password';
-    const XML_PATH_ENGAGEBAY_REST_API_KEY = 'engagebay/auth/engagebay_rest_api_key';
-    const XML_PATH_ENGAGEBAY_JS_API_KEY   = 'engagebay/auth/engagebay_js_api_key';
-    const XML_PATH_AUTH_STATUS            = 'engagebay/auth/status';
-    const XML_PATH_ENGAGEBAY_DOMAIN       = 'engagebay/auth/domain';
-    const XML_PATH_WEBPOPUPS              = 'engagebay/settings/engagebay_webpopups';
-    const XML_PATH_SYNC_CONTACTS          = 'engagebay/settings/engagebay_sync_contacts';
-    const XML_PATH_SYNC_ORDERS            = 'engagebay/settings/engagebay_sync_orders';
-    const XML_PATH_SYNC_DEALS             = 'engagebay/settings/engagebay_sync_deals';
-    const XML_PATH_SYNC_DEALS_TRACK       = 'engagebay/settings/engagebay_sync_deals_track';
-
+    /**
+     * @var WriterInterface
+     */
     private WriterInterface $config;
 
     /**
@@ -38,8 +40,7 @@ class Data extends AbstractHelper
         Context $context,
         ScopeConfigInterface $scopeConfig,
         WriterInterface $config
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->config      = $config;
         parent::__construct($context);
@@ -52,7 +53,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function getUsername($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function getUsername(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_ENGAGEBAY_USERNAME,
@@ -67,7 +68,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function getPassword($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function getPassword(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_ENGAGEBAY_PASSWORD,
@@ -80,9 +81,9 @@ class Data extends AbstractHelper
      *
      * @param string $scope
      *
-     * @return string
+     * @return string|null
      */
-    public function getRestApiKey($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function getRestApiKey(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): ?string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_ENGAGEBAY_REST_API_KEY,
@@ -97,7 +98,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function getJsApiKey($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function getJsApiKey(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_ENGAGEBAY_JS_API_KEY,
@@ -112,7 +113,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function getAuthStatus($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function getAuthStatus(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_AUTH_STATUS,
@@ -127,7 +128,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function getDomain($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function getDomain(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_ENGAGEBAY_DOMAIN,
@@ -140,9 +141,9 @@ class Data extends AbstractHelper
      *
      * @param string $scope
      *
-     * @return string
+     * @return string|null
      */
-    public function getDealsTrackName($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function getDealsTrackName(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): ?string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_SYNC_DEALS_TRACK,
@@ -157,7 +158,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function isContactSyncEnabled($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function isContactSyncEnabled(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_SYNC_CONTACTS,
@@ -172,7 +173,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function isOrdersSyncEnabled($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function isOrdersSyncEnabled(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_SYNC_ORDERS,
@@ -187,7 +188,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function isDealsSyncEnabled($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function isDealsSyncEnabled(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_SYNC_DEALS,
@@ -202,7 +203,7 @@ class Data extends AbstractHelper
      *
      * @return string
      */
-    public function isWebpopupsEnabled($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
+    public function isWebpopupsEnabled(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_WEBPOPUPS,
@@ -215,9 +216,9 @@ class Data extends AbstractHelper
      *
      * @param string $rest_api_key
      *
-     * @return string
+     * @return void
      */
-    public function setRestApiKey($rest_api_key)
+    public function setRestApiKey(string $rest_api_key): void
     {
         $this->config->save(
             self::XML_PATH_ENGAGEBAY_REST_API_KEY,
@@ -230,9 +231,9 @@ class Data extends AbstractHelper
      *
      * @param string $js_api_key
      *
-     * @return string
+     * @return void
      */
-    public function setJsApiKey($js_api_key)
+    public function setJsApiKey(string $js_api_key): void
     {
         $this->config->save(
             self::XML_PATH_ENGAGEBAY_JS_API_KEY,
@@ -245,9 +246,9 @@ class Data extends AbstractHelper
      *
      * @param string $domain
      *
-     * @return string
+     * @return void
      */
-    public function setDomain(string $domain)
+    public function setDomain(string $domain): void
     {
         $this->config->save(
             self::XML_PATH_ENGAGEBAY_DOMAIN,
@@ -259,8 +260,10 @@ class Data extends AbstractHelper
      * Set Auth Status
      *
      * @param string $status
+     *
+     * @return void
      */
-    public function setAuthStatus(string $status)
+    public function setAuthStatus(string $status): void
     {
         $this->config->save(
             self::XML_PATH_AUTH_STATUS,

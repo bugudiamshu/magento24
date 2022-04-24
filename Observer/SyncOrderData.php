@@ -8,9 +8,11 @@ use Magento\Catalog\Helper\Image;
 use Magento\Framework\Currency;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
 use Magento\Sales\Model\Order;
 use Psr\Log\LoggerInterface as Logger;
+use Zend_Http_Client_Exception;
 
 class SyncOrderData extends SyncData implements ObserverInterface
 {
@@ -18,13 +20,17 @@ class SyncOrderData extends SyncData implements ObserverInterface
      *
      * @var Logger
      */
-    private $logger;
+    private Logger $logger;
 
     /**
      *
      * @var Data
      */
-    private                        $_helper;
+    private Data $_helper;
+
+    /**
+     * @var EngageBayRestAPIHelper
+     */
     private EngageBayRestAPIHelper $_engageBayRestAPIHelper;
 
     /**
@@ -33,6 +39,9 @@ class SyncOrderData extends SyncData implements ObserverInterface
      * @param Logger                 $logger
      * @param EngageBayRestAPIHelper $engageBayRestAPIHelper
      * @param Data                   $helper
+     * @param Image                  $imageHelper
+     * @param UrlInterface           $url
+     * @param Currency               $currency
      */
     public function __construct(
         Logger $logger,
@@ -53,6 +62,9 @@ class SyncOrderData extends SyncData implements ObserverInterface
      * Below is the method that will fire whenever the event runs!
      *
      * @param Observer $observer
+     *
+     * @throws LocalizedException
+     * @throws Zend_Http_Client_Exception
      */
     public function execute(Observer $observer)
     {
@@ -68,8 +80,10 @@ class SyncOrderData extends SyncData implements ObserverInterface
      * @param Order $order
      *
      * @return void
+     * @throws LocalizedException
+     * @throws Zend_Http_Client_Exception
      */
-    public function syncOrderDataToEngageBay($order)
+    public function syncOrderDataToEngageBay(Order $order): void
     {
         $contact_data       = $this->prepareContactData($order);
         $contact_properties = $this->prepareContactJson($contact_data);
@@ -81,7 +95,13 @@ class SyncOrderData extends SyncData implements ObserverInterface
             $order_data = $this->prepareOrderData($order);
             $this->syncOrderToEngageBay($order_data, $contact_id);
             if ($this->_helper->isDealsSyncEnabled()) {
-                $ordersHookPayload = $this->prepareOrdersHookPayload($order_data['billing_email'], $order_data['items'], $order_data['order_id'], $order_data['subject'], $order_data['content']);
+                $ordersHookPayload = $this->prepareOrdersHookPayload(
+                    $order_data['billing_email'],
+                    $order_data['items'],
+                    $order_data['order_id'],
+                    $order_data['subject'],
+                    $order_data['content']
+                );
                 $this->_engageBayRestAPIHelper->syncDeals($ordersHookPayload);
             }
         } else {

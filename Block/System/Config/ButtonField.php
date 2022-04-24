@@ -13,7 +13,7 @@ abstract class ButtonField extends Field
     /**
      * @var Data
      */
-    private $helper;
+    private Data $helper;
 
     /**
      * ButtonField constructor.
@@ -36,9 +36,10 @@ abstract class ButtonField extends Field
      *
      * @return string
      */
-    public function render(AbstractElement $element)
+    public function render(AbstractElement $element): string
     {
         $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+
         return parent::render($element);
     }
 
@@ -49,7 +50,7 @@ abstract class ButtonField extends Field
      *
      * @return string
      */
-    protected function _getElementHtml(AbstractElement $element)
+    protected function _getElementHtml(AbstractElement $element): string
     {
         return $this->_toHtml();
     }
@@ -57,23 +58,23 @@ abstract class ButtonField extends Field
     /**
      * Get Button URL
      *
-     * @return mixed
+     * @return string
      */
-    abstract public function getButtonURL();
+    abstract public function getButtonURL(): string;
 
     /**
      * Get Button HTML
      *
-     * @return mixed
+     * @return string
      */
-    abstract public function getButtonHTML();
+    abstract public function getButtonHTML(): string;
 
     /**
      * Get Rest API Key
      *
-     * @return string
+     * @return string|null
      */
-    public function getRestApiKey()
+    public function getRestApiKey(): ?string
     {
         return $this->helper->getRestApiKey();
     }

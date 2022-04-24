@@ -9,46 +9,46 @@ use Zend_Http_Response;
 
 class EngageBayRestAPIHelper
 {
-    const ENGAGEBAY_BASE_URL               = 'https://app.engagebay.com/dev/api/panel';
-    const ENGAGEBAY_LOGIN_URL              = 'https://app.engagebay.com/rest/api/login/get-domain';
-    const ENGAGEBAY_SEARCH_CONTACT_API_URL = self::ENGAGEBAY_BASE_URL . '/subscribers/getByEmail/%s';
-    const ENGAGEBAY_ADD_CONTACT_API_URL    = self::ENGAGEBAY_BASE_URL . '/subscribers/subscriber';
-    const ENGAGEBAY_UPDATE_CONTACT_API_URL = self::ENGAGEBAY_BASE_URL . '/subscribers/update-partial';
-    const ENGAGEBAY_ADD_NOTES_API_URL      = self::ENGAGEBAY_BASE_URL . '/notes';
-    const ENGAGEBAY_ADD_TAGS_API_URL       = self::ENGAGEBAY_BASE_URL . '/subscribers/email/tags/add';
-    const ENGAGEBAY_BULK_SYNC              = self::ENGAGEBAY_BASE_URL . '/magento/bulk-dump/%s';
-    const ENGAGEBAY_STORE_ORDERS           = self::ENGAGEBAY_BASE_URL . '/magento/hook/ORDERS';
-    const ENGAGEBAY_DEALS_TRACKS           = self::ENGAGEBAY_BASE_URL . '/tracks';
+    public const ENGAGEBAY_BASE_URL = 'https://app.engagebay.com/dev/api/panel';
+    public const ENGAGEBAY_LOGIN_URL = 'https://app.engagebay.com/rest/api/login/get-domain';
+    public const ENGAGEBAY_SEARCH_CONTACT_API_URL = self::ENGAGEBAY_BASE_URL . '/subscribers/getByEmail/%s';
+    public const ENGAGEBAY_ADD_CONTACT_API_URL = self::ENGAGEBAY_BASE_URL . '/subscribers/subscriber';
+    public const ENGAGEBAY_UPDATE_CONTACT_API_URL = self::ENGAGEBAY_BASE_URL . '/subscribers/update-partial';
+    public const ENGAGEBAY_ADD_NOTES_API_URL = self::ENGAGEBAY_BASE_URL . '/notes';
+    public const ENGAGEBAY_ADD_TAGS_API_URL = self::ENGAGEBAY_BASE_URL . '/subscribers/email/tags/add';
+    public const ENGAGEBAY_BULK_SYNC = self::ENGAGEBAY_BASE_URL . '/magento/bulk-dump/%s';
+    public const ENGAGEBAY_STORE_ORDERS = self::ENGAGEBAY_BASE_URL . '/magento/hook/ORDERS';
+    public const ENGAGEBAY_DEALS_TRACKS = self::ENGAGEBAY_BASE_URL . '/tracks';
 
-    public const LOGIN_REQUEST_IDENTIFIER             = 'login';
-    public const SEARCH_REQUEST_IDENTIFIER            = 'search';
-    public const ADD_CONTACT_REQUEST_IDENTIFIER       = 'add_contact';
-    public const UPDATE_CONTACT_REQUEST_IDENTIFIER    = 'update_contact';
-    public const ADD_NOTES_REQUEST_IDENTIFIER         = 'add_notes';
-    public const ADD_TAGS_REQUEST_IDENTIFIER          = 'add_tags';
-    public const BULK_SYNC_REQUEST_IDENTIFIER         = 'bulk_sync';
+    public const LOGIN_REQUEST_IDENTIFIER = 'login';
+    public const SEARCH_REQUEST_IDENTIFIER = 'search';
+    public const ADD_CONTACT_REQUEST_IDENTIFIER = 'add_contact';
+    public const UPDATE_CONTACT_REQUEST_IDENTIFIER = 'update_contact';
+    public const ADD_NOTES_REQUEST_IDENTIFIER = 'add_notes';
+    public const ADD_TAGS_REQUEST_IDENTIFIER = 'add_tags';
+    public const BULK_SYNC_REQUEST_IDENTIFIER = 'bulk_sync';
     public const STORE_ORDERS_HOOK_REQUEST_IDENTIFIER = 'store_orders_hook';
-    public const DEALS_TRACKS_REQUEST_IDENTIFIER      = 'get_tracks';
+    public const DEALS_TRACKS_REQUEST_IDENTIFIER = 'get_tracks';
 
     /**
      * @var ZendClient
      */
-    private $httpClient;
+    private ZendClient $httpClient;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * @var array
      */
-    private $headers;
+    private array $headers;
 
     /**
      * @var Data
      */
-    private $helper;
+    private Data $helper;
 
     /**
      * EngageBayRestAPIHelper constructor.
@@ -75,7 +75,7 @@ class EngageBayRestAPIHelper
      * @param string $username
      * @param string $password
      *
-     * @return false|mixed
+     * @return array|false
      * @throws Zend_Http_Client_Exception
      */
     public function login(string $username, string $password)
@@ -96,7 +96,7 @@ class EngageBayRestAPIHelper
      *
      * @param string $email
      *
-     * @return false|mixed
+     * @return array|false
      * @throws Zend_Http_Client_Exception
      */
     public function searchContact(string $email)
@@ -111,7 +111,7 @@ class EngageBayRestAPIHelper
      *
      * @param array $contact
      *
-     * @return false|mixed
+     * @return array|false
      * @throws Zend_Http_Client_Exception
      */
     public function addContact(array $contact)
@@ -127,7 +127,7 @@ class EngageBayRestAPIHelper
      * @param array  $contact
      * @param string $engagebay_contact_id
      *
-     * @return false|mixed
+     * @return array|false
      * @throws Zend_Http_Client_Exception
      */
     public function updateContact(array $contact, string $engagebay_contact_id)
@@ -145,7 +145,7 @@ class EngageBayRestAPIHelper
      * @param array  $order
      * @param string $contact_id
      *
-     * @return false|mixed
+     * @return array|false
      */
     public function createNotes(array $order, string $contact_id)
     {
@@ -166,7 +166,7 @@ class EngageBayRestAPIHelper
      * @param string $email
      * @param string $items
      *
-     * @return false|mixed
+     * @return array|false
      * @throws Zend_Http_Client_Exception
      */
     public function createTags(string $email, string $items)
@@ -177,9 +177,9 @@ class EngageBayRestAPIHelper
         $this->httpClient->resetParameters(true);
         $this->httpClient->setHeaders(
             [
-            'Content-Type'  => 'application/x-www-form-urlencoded',
-            'Authorization' => $this->helper->getRestApiKey(),
-            'Accept'        => 'application/json',
+                'Content-Type'  => 'application/x-www-form-urlencoded',
+                'Authorization' => $this->helper->getRestApiKey(),
+                'Accept'        => 'application/json',
             ]
         );
         $this->httpClient->setUri(self::ENGAGEBAY_ADD_TAGS_API_URL);
@@ -197,7 +197,7 @@ class EngageBayRestAPIHelper
      * @param array  $batch
      * @param string $type
      *
-     * @return false|mixed
+     * @return array|false
      * @throws Zend_Http_Client_Exception
      */
     public function bulkSync(array $batch, string $type)
@@ -208,7 +208,11 @@ class EngageBayRestAPIHelper
     }
 
     /**
-     * @return mixed|null
+     * Sync Deals into EngageBay
+     *
+     * @param array $payload
+     *
+     * @return array|false
      * @throws Zend_Http_Client_Exception
      */
     public function syncDeals(array $payload)
@@ -218,7 +222,13 @@ class EngageBayRestAPIHelper
         return $this->decodeResponse($response, self::STORE_ORDERS_HOOK_REQUEST_IDENTIFIER);
     }
 
-    public function getTracks()
+    /**
+     * Get EngageBay Deals Tracks
+     *
+     * @return array
+     * @throws Zend_Http_Client_Exception
+     */
+    public function getTracks(): array
     {
         $response = $this->makeRequest(self::ENGAGEBAY_DEALS_TRACKS, 'GET');
 
@@ -232,7 +242,7 @@ class EngageBayRestAPIHelper
      *
      * @return string
      */
-    public function fnJsEscape(string $str)
+    public function fnJsEscape(string $str): string
     {
         return strtr(
             $str,
@@ -274,7 +284,7 @@ class EngageBayRestAPIHelper
      * @param Zend_Http_Response $response
      * @param string             $requestIdentifier
      *
-     * @return false|mixed
+     * @return array|false
      */
     public function decodeResponse(Zend_Http_Response $response, string $requestIdentifier)
     {

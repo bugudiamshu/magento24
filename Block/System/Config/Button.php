@@ -18,11 +18,12 @@ class Button extends ButtonField
      *
      * @return string
      */
-    public function getButtonURL()
+    public function getButtonURL(): string
     {
         return $this->getUrl(
-            'engagebay/login/authorize', [
-            'form_key' => $this->getFormKey(),
+            'engagebay/login/authorize',
+            [
+                'form_key' => $this->getFormKey(),
             ]
         );
     }
@@ -33,7 +34,7 @@ class Button extends ButtonField
      * @return string
      * @throws LocalizedException
      */
-    public function getButtonHTML()
+    public function getButtonHTML(): string
     {
         $button = $this->getLayout()->createBlock(
             \Magento\Backend\Block\Widget\Button::class
@@ -48,3 +49,4 @@ class Button extends ButtonField
         return $button->toHtml();
     }
 }
+

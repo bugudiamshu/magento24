@@ -16,14 +16,39 @@ use Zend_Http_Client_Exception;
 
 class SyncData
 {
+    /**
+     * @var EngageBayRestAPIHelper
+     */
     private EngageBayRestAPIHelper $_engageBayRestAPIHelper;
-    private Image                  $_imageHelper;
-    private Data                   $_helper;
-    private UrlInterface           $_url;
-    private Currency               $_currency;
+
+    /**
+     * @var Image
+     */
+    private Image $_imageHelper;
+
+    /**
+     * @var Data
+     */
+    private Data $_helper;
+
+    /**
+     * @var UrlInterface
+     */
+    private UrlInterface $_url;
+
+    /**
+     * @var Currency
+     */
+    private Currency $_currency;
 
     /**
      * SyncData constructor.
+     *
+     * @param EngageBayRestAPIHelper $engageBayRestAPIHelper
+     * @param Image                  $imageHelper
+     * @param Data                   $helper
+     * @param UrlInterface           $url
+     * @param Currency               $currency
      */
     public function __construct(
         EngageBayRestAPIHelper $engageBayRestAPIHelper,
@@ -31,8 +56,7 @@ class SyncData
         Data $helper,
         UrlInterface $url,
         Currency $currency
-    )
-    {
+    ) {
         $this->_engageBayRestAPIHelper = $engageBayRestAPIHelper;
         $this->_imageHelper            = $imageHelper;
         $this->_helper                 = $helper;
@@ -46,7 +70,8 @@ class SyncData
      * @param array  $contact
      * @param string $email
      *
-     * @return false|mixed
+     * @return array|false
+     * @throws Zend_Http_Client_Exception
      */
     public function syncContactToEngageBay(array $contact, string $email)
     {
@@ -69,7 +94,7 @@ class SyncData
      *
      * @throws Zend_Http_Client_Exception
      */
-    public function syncOrderToEngageBay(array $order, string $contact_id)
+    public function syncOrderToEngageBay(array $order, string $contact_id): void
     {
         $notes_result = $this->_engageBayRestAPIHelper->createNotes($order, $contact_id);
         if ($notes_result) {
@@ -77,12 +102,26 @@ class SyncData
         }
     }
 
-    public function prepareOrdersHookPayload($billingEmail, $items, $orderId, $subject, $content): array
-    {
+    /**
+     * Prepare Order Hooks Paylod
+     *
+     * @param string               $billingEmail
+     * @param OrderItemInterface[] $items
+     * @param int                  $orderId
+     * @param string               $subject
+     * @param string               $content
+     *
+     * @return array
+     */
+    public function prepareOrdersHookPayload(
+        string $billingEmail,
+        array $items,
+        int $orderId,
+        string $subject,
+        string $content
+    ): array {
         $products = [];
-        /**
-         * @var OrderItemInterface $item
-         */
+
         foreach ($items as $item) {
             $_product = $item->getProduct();
             array_push(
@@ -91,7 +130,12 @@ class SyncData
                     'name'       => $item->getName(),
                     'price'      => $item->getPrice(),
                     'quantity'   => $item->getQtyOrdered(),
-                    'image'      => $this->_imageHelper->init($_product, 'small_image', ['type' => 'small_image'])->keepAspectRatio(true)->resize('75', '75')->getUrl(),
+                    'image'      => $this->_imageHelper->init(
+                        $_product,
+                        'small_image',
+                        ['type' => 'small_image']
+                    )->keepAspectRatio(true)
+                                                       ->resize('75', '75')->getUrl(),
                     'properties' => [],
                 ]
             );
@@ -106,7 +150,12 @@ class SyncData
             'order_id'                       => $orderId,
             'subject'                        => $subject,
             'content'                        => $content,
-            'currency'                       => $this->_currency->getShortName() . '-' . html_entity_decode($this->_currency->getSymbol(), ENT_COMPAT, 'UTF-8'),
+            'currency'                       => $this->_currency->getShortName() . '-' .
+                                                html_entity_decode(
+                                                    $this->_currency->getSymbol(),
+                                                    ENT_COMPAT,
+                                                    'UTF-8'
+                                                ),
             'contacts'                       => [
                 [
                     'email'    => $billingEmail,
@@ -123,7 +172,7 @@ class SyncData
      *
      * @return array
      */
-    public function prepareContactJson(array $contact)
+    public function prepareContactJson(array $contact): array
     {
         $contact_properties = [
             [
@@ -168,15 +217,13 @@ class SyncData
             ['tag' => 'Magento'],
         ];
 
-        $body_data = [
+        return [
             'score'        => 10,
             'status'       => 'CONFIRMED',
             'company_name' => $contact['company_name'],
             'properties'   => $contact_properties,
             'tags'         => $tags,
         ];
-
-        return $body_data;
     }
 
     /**
@@ -186,7 +233,7 @@ class SyncData
      *
      * @return array
      */
-    public function prepareContactData(OrderInterface $order)
+    public function prepareContactData(OrderInterface $order): array
     {
         $billing_address = $order->getBillingAddress();
         $is_guest        = $order->getCustomerIsGuest();
@@ -210,7 +257,7 @@ class SyncData
      * @return array
      * @throws LocalizedException
      */
-    public function prepareOrderData(Order $order)
+    public function prepareOrderData($order): array
     {
         $order_id      = $order->getId();
         $order_address = $order->getBillingAddress();
@@ -235,13 +282,18 @@ class SyncData
      * @return string
      * @throws LocalizedException
      */
-    public function prepareContent(Order $order)
+    public function prepareContent(Order $order): string
     {
         $content = 'Products: ';
         $content .= $this->getItems($order->getItems()) . '; ';
         $content .= 'Total: ' . $order->getGrandTotal() . '; ';
         $content .= 'Status: ' . $order->getStatusLabel() . '; ';
-        $content .= 'Billing Address: ' . implode(', ', array_values($this->prepareBillingAddress($order->getBillingAddress())));
+        $content .= 'Billing Address: ' . implode(
+            ', ',
+            array_values(
+                $this->prepareBillingAddress($order->getBillingAddress())
+            )
+        );
 
         return $content;
     }
@@ -253,7 +305,7 @@ class SyncData
      *
      * @return string
      */
-    public function getItems(array $items)
+    public function getItems(array $items): string
     {
         $itemNames = [];
         foreach ($items as $item) {
@@ -270,7 +322,7 @@ class SyncData
      *
      * @return array
      */
-    public function prepareBillingAddress(OrderAddressInterface $orderBillingAddress)
+    public function prepareBillingAddress(OrderAddressInterface $orderBillingAddress): array
     {
         return [
             'address' => implode(',', $orderBillingAddress->getStreet()),

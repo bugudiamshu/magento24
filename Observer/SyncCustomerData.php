@@ -15,11 +15,27 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Zend_Http_Client_Exception;
 
 class SyncCustomerData extends SyncData implements ObserverInterface
 {
-    private Data                  $_helper;
-    private CustomerFactory       $_customerFactory;
+    public const CUSTOMER_ACCOUNT_EDITED = 'customer_account_edited';
+    public const CUSTOMER_REGISTER_SUCCESS = 'customer_register_success';
+    public const ADMINHTML_CUSTOMER_SAVE_AFTER = 'adminhtml_customer_save_after';
+
+    /**
+     * @var Data
+     */
+    private Data $_helper;
+
+    /**
+     * @var CustomerFactory
+     */
+    private CustomerFactory $_customerFactory;
+
+    /**
+     * @var StoreManagerInterface
+     */
     private StoreManagerInterface $_storeManager;
 
     /**
@@ -47,7 +63,11 @@ class SyncCustomerData extends SyncData implements ObserverInterface
         $this->_storeManager    = $storeManager;
 
         parent::__construct(
-            $engageBayRestAPIHelper, $imageHelper, $helper, $url, $currency
+            $engageBayRestAPIHelper,
+            $imageHelper,
+            $helper,
+            $url,
+            $currency
         );
     }
 
@@ -56,7 +76,7 @@ class SyncCustomerData extends SyncData implements ObserverInterface
      *
      * @param Observer $observer
      *
-     * @throws LocalizedException
+     * @throws LocalizedException|Zend_Http_Client_Exception
      */
     public function execute(Observer $observer)
     {
@@ -90,22 +110,22 @@ class SyncCustomerData extends SyncData implements ObserverInterface
     private function getCustomer(Event $event)
     {
         switch ($event->getName()) {
-        case 'customer_account_edited':
-            $customer = $this->_customerFactory->create();
-            $customer->setWebsiteId($this->_storeManager->getWebsite()->getId());
-            /**
-             * @var Customer $customer
-             */
-            $customer = $customer->loadByEmail($event->getData()['email']);
-            break;
-        case 'customer_register_success':
-        case 'adminhtml_customer_save_after':
-        default:
-            /**
-             * @var CustomerInterface $customer
-             */
-            $customer = $event->getCustomer();
-            break;
+            case self::CUSTOMER_ACCOUNT_EDITED:
+                $customer = $this->_customerFactory->create();
+                $customer->setWebsiteId($this->_storeManager->getWebsite()->getId());
+                /**
+                 * @var Customer $customer
+                 */
+                $customer = $customer->loadByEmail($event->getData()['email']);
+                break;
+            case self::CUSTOMER_REGISTER_SUCCESS:
+            case self::ADMINHTML_CUSTOMER_SAVE_AFTER:
+            default:
+                /**
+                 * @var CustomerInterface $customer
+                 */
+                $customer = $event->getCustomer();
+                break;
         }
 
         return $customer;

@@ -2,9 +2,6 @@
 
 namespace EngageBay\Marketing\Block\System\Config;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Config\Block\System\Config\Form\Field;
-use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Exception\LocalizedException;
 
 class ImportCustomersButton extends ButtonField
@@ -21,12 +18,13 @@ class ImportCustomersButton extends ButtonField
      *
      * @return string
      */
-    public function getButtonURL()
+    public function getButtonURL(): string
     {
         return $this->getUrl(
-            'engagebay/import/CustomerSync', [
-            'form_key' => $this->getFormKey()
-            ]
+            'engagebay/import/CustomerSync',
+            [
+                                               'form_key' => $this->getFormKey()
+                                           ]
         );
     }
 
@@ -36,17 +34,18 @@ class ImportCustomersButton extends ButtonField
      * @return string
      * @throws LocalizedException
      */
-    public function getButtonHTML()
+    public function getButtonHTML(): string
     {
         $button = $this->getLayout()->createBlock(
             \Magento\Backend\Block\Widget\Button::class
         )->setData(
             [
-                'id' => 'engagebay_import_customers_button',
+                'id'    => 'engagebay_import_customers_button',
                 'label' => __('IMPORT ALL CUSTOMERS TO ENGAGEBAY'),
                 'class' => 'primary'
             ]
         );
+
         return $button->toHtml();
     }
 }

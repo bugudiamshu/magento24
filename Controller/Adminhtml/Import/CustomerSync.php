@@ -8,65 +8,57 @@ use Exception;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerFactory;
 use Magento\Customer\Model\ResourceModel\Customer\Collection;
 use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Psr\Log\LoggerInterface;
+use Zend_Http_Client_Exception;
 
 class CustomerSync extends Action
 {
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    protected JsonFactory $resultJsonFactory;
 
     /**
-     *
      * @var Data
      */
-    protected $helper;
+    protected Data $helper;
 
     /**
-     *
      * @var Context
      */
-    protected $context;
+    protected Context $context;
 
     /**
-     *
      * @var WriterInterface
      */
-    protected $config;
+    protected WriterInterface $config;
 
     /**
-     *
      * @var EngageBayRestAPIHelper
      */
-    protected $engagebay_helper;
+    protected EngageBayRestAPIHelper $engagebay_helper;
 
     /**
-     *
      * @var AddressRepositoryInterface
      */
-    protected $address_repo;
+    protected AddressRepositoryInterface $address_repo;
 
     /**
-     *
      * @var LoggerInterface
      */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * @var CollectionFactory
      */
-    private $customerCollectionFactory;
+    private CollectionFactory $customerCollectionFactory;
 
     /**
      * CustomerSync constructor.
@@ -130,8 +122,10 @@ class CustomerSync extends Action
      * Send Bulk data to EngageBay
      *
      * @param Collection $customers
+     *
+     * @throws Zend_Http_Client_Exception
      */
-    public function sendBulkData(Collection $customers)
+    public function sendBulkData(Collection $customers): void
     {
         $users_count  = $customers->count();
         $batch_count  = 100;
@@ -139,19 +133,19 @@ class CustomerSync extends Action
         $divides_zero = $users_count % $batch_count;
         $batches      = [];
         if ($divides_zero != 0) {
-            $user_chunks = (int)$user_chunks + 1;
+            $user_chunks = (int) $user_chunks + 1;
         }
 
-        for ($j = 1; $j <= $user_chunks; ++$j) {
+        for ($j = 1; $j <= $user_chunks; ++ $j) {
             $batches[$j] = [];
         }
 
         $i = 0;
         /**
- * @var CustomerInterface $customer 
-*/
+         * @var CustomerInterface $customer
+         */
         foreach ($customers as $customer) {
-            for ($j = 1; $j <= $user_chunks; ++$j) {
+            for ($j = 1; $j <= $user_chunks; ++ $j) {
                 if ($i < $j * $batch_count) {
                     $customer_billing_address = isset($customer->getAddresses()[0])
                         ? $customer->getAddresses()[0] : null;
@@ -170,7 +164,7 @@ class CustomerSync extends Action
                     break;
                 }
             }
-            ++$i;
+            ++ $i;
         }
 
         foreach ($batches as $batch) {

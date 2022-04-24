@@ -12,8 +12,6 @@ use EngageBay\Marketing\Helper\EngageBayRestAPIHelper;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Psr\Log\LoggerInterface;
@@ -24,36 +22,36 @@ class Authorize extends Action
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    protected JsonFactory $resultJsonFactory;
 
     /**
      *
      * @var Data
      */
-    protected $helper;
+    protected Data $helper;
 
     /**
      *
      * @var Context
      */
-    protected $context;
+    protected Context $context;
 
     /**
      *
      * @var WriterInterface
      */
-    protected $config;
+    protected WriterInterface $config;
 
     /**
      *
      * @var EngageBayRestAPIHelper
      */
-    protected $engagebay_helper;
+    protected EngageBayRestAPIHelper $engagebay_helper;
 
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * Authorize constructor.
@@ -94,19 +92,21 @@ class Authorize extends Action
         $login = $this->engagebay_helper->login($engagebay_username, $engagebay_password);
         if (isset($login['api_key']['rest_API_Key'])) {
             $message = "Authenticated";
+            $restApiKey = $login['api_key']['rest_API_Key'];
             $this->helper->setAuthStatus("true");
             $this->helper->setRestApiKey($login['api_key']['rest_API_Key']);
             $this->helper->setJsApiKey($login['api_key']['js_API_Key']);
             $this->helper->setDomain($login['domain_name']);
         } else {
             $message = "Unauthenticated";
+            $restApiKey = '';
             $this->helper->setAuthStatus("false");
             $this->helper->setRestApiKey(null);
             $this->helper->setJsApiKey(null);
             $this->helper->setDomain(null);
         }
 
-        $data = ['message' => $message];
+        $data = ['message' => $message, 'restApiKey' => $restApiKey];
 
         return $result->setData($data);
     }

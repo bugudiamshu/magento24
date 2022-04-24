@@ -10,70 +10,61 @@ use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\OrderFactory;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Psr\Log\LoggerInterface;
+use Zend_Http_Client_Exception;
 
 class OrderSync extends Action
 {
     /**
      * @var JsonFactory
      */
-    protected $resultJsonFactory;
+    protected JsonFactory $resultJsonFactory;
 
     /**
-     *
      * @var Data
      */
-    protected $helper;
+    protected Data $helper;
 
     /**
-     *
      * @var Context
      */
-    protected $context;
+    protected Context $context;
 
     /**
-     *
      * @var WriterInterface
      */
-    protected $config;
+    protected WriterInterface $config;
 
     /**
-     *
      * @var EngageBayRestAPIHelper
      */
-    protected $engagebay_helper;
+    protected EngageBayRestAPIHelper $engagebay_helper;
 
     /**
-     *
      * @var AddressRepositoryInterface
      */
-    protected $address_repo;
+    protected AddressRepositoryInterface $address_repo;
 
     /**
-     *
      * @var SyncData
      */
-    protected $sync_data;
+    protected SyncData $sync_data;
 
     /**
-     *
      * @var LoggerInterface
      */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * @var CollectionFactory
      */
-    private $collectionFactory;
+    private CollectionFactory $collectionFactory;
 
     /**
      * OrderSync constructor.
@@ -140,9 +131,9 @@ class OrderSync extends Action
      *
      * @param Collection $orders
      *
-     * @throws LocalizedException
+     * @throws LocalizedException|Zend_Http_Client_Exception
      */
-    public function sendBulkData(Collection $orders)
+    public function sendBulkData(Collection $orders): void
     {
         $orders_count = $orders->count();
         $batch_count  = 100;
@@ -150,19 +141,19 @@ class OrderSync extends Action
         $divides_zero = $orders_count % $batch_count;
         $batches      = [];
         if ($divides_zero != 0) {
-            $order_chunks = (int)$order_chunks + 1;
+            $order_chunks = (int) $order_chunks + 1;
         }
 
-        for ($j = 1; $j <= $order_chunks; ++$j) {
+        for ($j = 1; $j <= $order_chunks; ++ $j) {
             $batches[$j] = [];
         }
 
         $i = 0;
         /**
- * @var OrderInterface $order 
-*/
+         * @var OrderInterface $order
+         */
         foreach ($orders as $order) {
-            for ($j = 1; $j <= $order_chunks; ++$j) {
+            for ($j = 1; $j <= $order_chunks; ++ $j) {
                 if ($i < $j * $batch_count) {
                     $batch_data                    = [];
                     $batch_data['contact_details'] = $this->sync_data->prepareContactData($order);
@@ -171,7 +162,7 @@ class OrderSync extends Action
                     break;
                 }
             }
-            ++$i;
+            ++ $i;
         }
 
         foreach ($batches as $batch) {
