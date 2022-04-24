@@ -5,6 +5,7 @@ namespace EngageBay\Marketing\Observer;
 use EngageBay\Marketing\Helper\Data;
 use EngageBay\Marketing\Helper\EngageBayRestAPIHelper;
 use Magento\Catalog\Helper\Image;
+use Magento\Catalog\Model\Product;
 use Magento\Framework\Currency;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
@@ -130,12 +131,7 @@ class SyncData
                     'name'       => $item->getName(),
                     'price'      => $item->getPrice(),
                     'quantity'   => $item->getQtyOrdered(),
-                    'image'      => $this->_imageHelper->init(
-                        $_product,
-                        'small_image',
-                        ['type' => 'small_image']
-                    )->keepAspectRatio(true)
-                                                       ->resize('75', '75')->getUrl(),
+                    'image'      => $this->getImageUrl($_product),
                     'properties' => [],
                 ]
             );
@@ -150,12 +146,7 @@ class SyncData
             'order_id'                       => $orderId,
             'subject'                        => $subject,
             'content'                        => $content,
-            'currency'                       => $this->_currency->getShortName() . '-' .
-                                                html_entity_decode(
-                                                    $this->_currency->getSymbol(),
-                                                    ENT_COMPAT,
-                                                    'UTF-8'
-                                                ),
+            'currency'                       => $this->getCurrency(),
             'contacts'                       => [
                 [
                     'email'    => $billingEmail,
@@ -163,6 +154,37 @@ class SyncData
                 ],
             ],
         ];
+    }
+
+    /**
+     * Get Image Url from Product
+     *
+     * @param Product $product
+     *
+     * @return string
+     */
+    public function getImageUrl(Product $product): string
+    {
+        return $this->_imageHelper->init(
+            $product,
+            'small_image',
+            ['type' => 'small_image']
+        )->keepAspectRatio(true)->resize('75', '75')->getUrl();
+    }
+
+    /**
+     * Get Store Currency
+     *
+     * @return string
+     */
+    public function getCurrency(): string
+    {
+        return $this->_currency->getShortName() . '-' .
+               html_entity_decode(
+                   $this->_currency->getSymbol(),
+                   ENT_COMPAT,
+                   'UTF-8'
+               );
     }
 
     /**
@@ -289,11 +311,11 @@ class SyncData
         $content .= 'Total: ' . $order->getGrandTotal() . '; ';
         $content .= 'Status: ' . $order->getStatusLabel() . '; ';
         $content .= 'Billing Address: ' . implode(
-            ', ',
-            array_values(
-                $this->prepareBillingAddress($order->getBillingAddress())
-            )
-        );
+                ', ',
+                array_values(
+                    $this->prepareBillingAddress($order->getBillingAddress())
+                )
+            );
 
         return $content;
     }

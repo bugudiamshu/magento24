@@ -19,6 +19,9 @@ class EngageBayRestAPIHelper
     public const ENGAGEBAY_BULK_SYNC = self::ENGAGEBAY_BASE_URL . '/magento/bulk-dump/%s';
     public const ENGAGEBAY_STORE_ORDERS = self::ENGAGEBAY_BASE_URL . '/magento/hook/ORDERS';
     public const ENGAGEBAY_DEALS_TRACKS = self::ENGAGEBAY_BASE_URL . '/tracks';
+    public const ENGAGEBAY_SEARCH_PRODUCT_BY_NAME = self::ENGAGEBAY_BASE_URL . '/products/getByName/%s';
+    public const ENGAGEBAY_ADD_PRODUCT_TO_OWNER = self::ENGAGEBAY_BASE_URL . '/products/product';
+    public const ENGAGEBAY_SYNC_PRODUCT_TO_CONTACT = self::ENGAGEBAY_BASE_URL . '/products/add-product-to-contact/%s';
 
     public const LOGIN_REQUEST_IDENTIFIER = 'login';
     public const SEARCH_REQUEST_IDENTIFIER = 'search';
@@ -29,6 +32,10 @@ class EngageBayRestAPIHelper
     public const BULK_SYNC_REQUEST_IDENTIFIER = 'bulk_sync';
     public const STORE_ORDERS_HOOK_REQUEST_IDENTIFIER = 'store_orders_hook';
     public const DEALS_TRACKS_REQUEST_IDENTIFIER = 'get_tracks';
+    public const ADD_PRODUCT_TO_OWNER_REQUEST_IDENTIFIER = 'create_product';
+    public const UPDATE_PRODUCT_FOR_OWNER_REQUEST_IDENTIFIER = 'create_product';
+    public const SYNC_PRODUCT_TO_CONTACT_REQUEST_IDENTIFIER = 'sync_product';
+    public const SEARCH_PRODUCT_BY_NAME_REQUEST_IDENTIFIER = 'search_product';
 
     /**
      * @var ZendClient
@@ -233,6 +240,72 @@ class EngageBayRestAPIHelper
         $response = $this->makeRequest(self::ENGAGEBAY_DEALS_TRACKS, 'GET');
 
         return $this->decodeResponse($response, self::DEALS_TRACKS_REQUEST_IDENTIFIER);
+    }
+
+    /**
+     * @param string $productName
+     *
+     * @return array
+     * @throws Zend_Http_Client_Exception
+     */
+    public function searchProduct(string $productName): array
+    {
+        $this->headers['Content-Type'] = 'application/json';
+        $this->headers['Accept']       = 'application/json';
+
+        $response = $this->makeRequest(
+            sprintf(self::ENGAGEBAY_SEARCH_PRODUCT_BY_NAME, $productName), 'GET'
+        );
+
+        return $this->decodeResponse($response, self::SEARCH_PRODUCT_BY_NAME_REQUEST_IDENTIFIER);
+    }
+
+    /**
+     * Add Product to Owner
+     *
+     * @param array $payload
+     *
+     * @return array
+     * @throws Zend_Http_Client_Exception
+     */
+    public function addProductToOwner(array $payload): array
+    {
+        $response = $this->makeRequest(self::ENGAGEBAY_ADD_PRODUCT_TO_OWNER, 'POST', json_encode($payload));
+
+        return $this->decodeResponse($response, self::ADD_PRODUCT_TO_OWNER_REQUEST_IDENTIFIER);
+    }
+
+    /**
+     * Update product for Owner
+     *
+     * @param array $payload
+     *
+     * @return array
+     * @throws Zend_Http_Client_Exception
+     */
+    public function updateProductForOwner(array $payload): array
+    {
+        $response = $this->makeRequest(self::ENGAGEBAY_ADD_PRODUCT_TO_OWNER, 'PUT', json_encode($payload));
+
+        return $this->decodeResponse($response, self::UPDATE_PRODUCT_FOR_OWNER_REQUEST_IDENTIFIER);
+    }
+
+    /**
+     * Sync Product to Contact
+     *
+     * @param string $contactId
+     * @param array  $payload
+     *
+     * @return array
+     * @throws Zend_Http_Client_Exception
+     */
+    public function syncProductToContact(string $contactId, array $payload): array
+    {
+        $response = $this->makeRequest(
+            sprintf(self::ENGAGEBAY_SYNC_PRODUCT_TO_CONTACT, $contactId), 'POST', json_encode($payload)
+        );
+
+        return $this->decodeResponse($response, self::SYNC_PRODUCT_TO_CONTACT_REQUEST_IDENTIFIER);
     }
 
     /**
