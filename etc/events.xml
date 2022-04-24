@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/Event/etc/events.xsd">
+    <event name="customer_register_success">
+        <observer name="engagebay_customer_register_observer" instance="EngageBay\Marketing\Observer\SyncCustomerData" />
+    </event>
+    <event name="adminhtml_customer_save_after">
+        <observer name="engagebay_admin_customer_create_observer" instance="EngageBay\Marketing\Observer\SyncCustomerData"/>
+    </event>
+    <event name="customer_account_edited">
+        <observer name="engagebay_customer_account_edited_observer" instance="EngageBay\Marketing\Observer\SyncCustomerData"/>
+    </event>
+    <event name="checkout_submit_all_after">
+        <observer name="engagebay_order_created_observer" instance="EngageBay\Marketing\Observer\SyncOrderData" />
+    </event>
+</config>

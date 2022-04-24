@@ -1,0 +1,20 @@
+<?php
+
+// phpcs:disable Magento2.Templates.ThisInTemplate
+
+/** @var Config $block */
+use EngageBay\Marketing\Block\Config;
+
+?>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "engageBayScript": {
+                "engagebay_js_api_key": "<?= /* @noEscape */ $block->getJsApiKey(); ?>",
+                "engagebay_domain": "<?= /* @noEscape */ $block->getDomain(); ?>",
+                "engagebay_webpopups": "<?= /* @noEscape */ $block->isWebpopupsEnabled(); ?>"
+            }
+        }
+    }
+</script>

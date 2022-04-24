@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="engageBay" translate="label" sortOrder="10">
+            <label>EngageBay</label>
+        </tab>
+        <section id="engagebay" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Marketing</label>
+            <tab>engageBay</tab>
+            <resource>EngageBay_Marketing::marketing_config</resource>
+
+            <group id="auth" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Already have an account? Enter your details</label>
+                <field id="engagebay_username" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Username</label>
+                    <comment>Enter your EngageBay Email ID</comment>
+                </field>
+                <field id="engagebay_password" translate="label comment" type="password" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Password</label>
+                    <comment>Enter your EngageBay Password</comment>
+                </field>
+                <field id="engagebay_login_btn" translate="label comment" type="button" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>EngageBay\Marketing\Block\System\Config\Button</frontend_model>
+                </field>
+            </group>
+
+            <group id="settings" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Configuration Options</label>
+                <field id="engagebay_sync_contacts" translate="label comment" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync customers as Contacts in EngageBay</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="engagebay_sync_orders" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync Orders as Notes in EngageBay</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="engagebay_sync_deals" translate="label comment" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync Orders as Deals in EngageBay</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="engagebay_webpopups" translate="label comment" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allow Webpopups</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+
+            <group id="import" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Import Magento Data to EngageBay</label>
+                <field id="engagebay_import_customers_btn" translate="label comment" type="button" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>EngageBay\Marketing\Block\System\Config\ImportCustomersButton</frontend_model>
+                </field>
+                <field id="engagebay_import_orders_btn" translate="label comment" type="button" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>EngageBay\Marketing\Block\System\Config\ImportOrdersButton</frontend_model>
+                </field>
+            </group>
+
+        </section>
+    </system>
+</config>

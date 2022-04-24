@@ -1,0 +1,35 @@
+<?php /* @var $block ImportCustomersButton */
+
+use EngageBay\Marketing\Block\System\Config\ImportCustomersButton; ?>
+
+<script>
+require([
+    'jquery',
+    'prototype',
+], function($){
+
+    function processRequest() {
+
+        new Ajax.Request('<?= $block->escapeUrl($block->getButtonURL()); ?>', {
+            loaderArea:     false,
+            asynchronous:   true,
+            parameters:     {},
+            onSuccess: function(response) {
+                var response = JSON.parse(response.responseText);
+                $("#spinner").remove();
+            }
+        });
+    }
+
+    $('#engagebay_import_customers_button').click(function () {
+        $("<img id='spinner' style='vertical-align: middle;width: 30px;margin-left:8px' " +
+            "src='<?= $block->escapeUrl($block->getViewFileUrl('EngageBay_Marketing::images/spinner.gif')); ?>'/>")
+            .insertAfter($("#engagebay_import_customers_button"));
+        processRequest();
+    });
+
+});
+</script>
+
+
+<?= $block->getButtonHTML(); ?>

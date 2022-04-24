@@ -1,0 +1,85 @@
+
+<?php /* @var $block Button */
+
+use EngageBay\Marketing\Block\System\Config\Button; ?>
+
+<script>
+require([
+    'jquery',
+    'prototype',
+], function($){
+
+    <?php
+    if ($block->getRestApiKey()) {
+        ?>
+        $("#engagebay_login_btn span").text('Connected');
+        $("#engagebay_login_btn").attr('disabled', true);
+        resetConnectButton();
+        <?php
+    }
+    ?>
+
+    function processRequest(engagebay_username, engagebay_password) {
+
+        params = {
+            "engagebay_username" : engagebay_username,
+            "engagebay_password" : engagebay_password
+        };
+        $('#unauthenticated').remove();
+        $('#authenticated').remove();
+        console.log('<?= $block->escapeUrl($block->getButtonURL()); ?>');
+        new Ajax.Request('<?= $block->escapeUrl($block->getButtonURL()); ?>', {
+            loaderArea:     false,
+            asynchronous:   true,
+            parameters:     params,
+            onSuccess: function(response) {
+                response = JSON.parse(response.responseText);
+                $("#spinner").remove();
+                resetConnectButton();
+                if(response.message === 'Authenticated') {
+                    $("#engagebay_login_btn span").text('Connected');
+                    $("#engagebay_login_btn").attr('disabled', true);
+                } else if($("#unauthenticated").length === 0 && response.message === 'Unauthenticated') {
+                    $("#engagebay_login_btn span").text('Connect');
+                    $("#engagebay_login_btn").attr('disabled', false);
+                    $("<p id='unauthenticated' style='color:red'>" +
+                        "Invalid Credentials</p>")
+                        .insertAfter($("#engagebay_login_btn"));
+                }
+            },
+            onFailure: function() {
+                $("#spinner").remove();
+                $("#engagebay_login_btn span").text('Connect');
+                $("#engagebay_login_btn").attr('disabled', false);
+                $("<p id='unauthenticated' style='color:red'>" +
+                    "Invalid Credentials</p>")
+                    .insertAfter($("#engagebay_login_btn"));
+            }
+        });
+    }
+
+    $('#engagebay_login_btn').click(function () {
+        $("<img id='spinner' style='vertical-align: middle;width: 30px;margin-left:8px'" +
+            "src='<?= $block->escapeUrl($block->getViewFileUrl('EngageBay_Marketing::images/spinner.gif')); ?>'/>")
+            .insertAfter($("#engagebay_login_btn"));
+        var engagebay_username = $("#engagebay_auth_engagebay_username").val();
+        var engagebay_password = $("#engagebay_auth_engagebay_password").val();
+        processRequest (engagebay_username, engagebay_password);
+    });
+
+    function resetConnectButton() {
+        $("#engagebay_auth_engagebay_username").keyup(function(){
+            $("#engagebay_login_btn span").text('Connect');
+            $("#engagebay_login_btn").attr('disabled', false);
+        })
+
+        $("#engagebay_auth_engagebay_password").keyup(function(){
+            $("#engagebay_login_btn span").text('Connect');
+            $("#engagebay_login_btn").attr('disabled', false);
+        })
+    }
+});
+</script>
+
+
+<?= $block->getButtonHTML(); ?>
